@@ -15,9 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@lib/memory-store": ["libs/memory-store/src/index.ts"],
-      "@lib/services": ["libs/services/src/index.ts"],
-      "@lib/middleware": ["libs/middleware/src/index.ts"]
+      "@lib/api-guard": ["libs/api-guard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

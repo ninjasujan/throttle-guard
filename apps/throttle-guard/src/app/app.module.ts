@@ -5,18 +5,25 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ServicesModule } from '@lib/services';
-import { MemoryStoreModule } from '@lib/memory-store';
-import { RateLimitMiddleware, MiddlewareModule } from '@lib/middleware';
+import { AppMiddleware } from './app.middleware';
+import { ApiGuardModule } from '@lib/api-guard';
 
 @Module({
-  imports: [ServicesModule, MemoryStoreModule, MiddlewareModule],
+  imports: [
+    ApiGuardModule.forRootAsync({
+      useFactory: () => ({
+        type: 'single',
+        url: 'redis://localhost:6379',
+      }),
+    }),
+  ],
+  providers: [AppMiddleware],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(RateLimitMiddleware)
+      .apply(AppMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
