@@ -1,2 +1,2 @@
-export * from './lib/api-guard.module';
-export * from './lib/strategies';
+export * from './api-guard.module';
+export * from './middlewares';

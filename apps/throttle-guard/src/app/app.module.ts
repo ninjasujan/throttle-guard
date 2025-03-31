@@ -5,25 +5,28 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppMiddleware } from './app.middleware';
-import { ApiGuardModule } from '@lib/api-guard';
+import { ApiGuardModule, SlidingWindowLogGuard } from '@lib/api-guard';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     ApiGuardModule.forRootAsync({
-      useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'single',
-        url: 'redis://localhost:6379',
+        url: configService.getOrThrow<string>('REDIS_URL'),
       }),
     }),
   ],
-  providers: [AppMiddleware],
+  providers: [],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(AppMiddleware)
+      .apply(SlidingWindowLogGuard)
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
