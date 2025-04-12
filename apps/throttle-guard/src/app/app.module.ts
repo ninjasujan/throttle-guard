@@ -1,17 +1,12 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ApiGuardModule, SlidingWindowLogGuard } from '@lib/api-guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TrafixModule } from '@libs/trafix';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    ApiGuardModule.forRootAsync({
+    TrafixModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -19,14 +14,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         url: configService.getOrThrow<string>('REDIS_URL'),
       }),
     }),
+    TrafixModule,
   ],
   providers: [],
   controllers: [AppController],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(SlidingWindowLogGuard)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }
-}
+export class AppModule {}

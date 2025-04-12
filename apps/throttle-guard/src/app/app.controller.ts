@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { TrafixGuard } from '@libs/trafix';
 
 @Controller('app')
 export class AppController {
@@ -10,8 +11,11 @@ export class AppController {
      */
   }
 
+  @UseGuards(TrafixGuard)
   @Get('')
   getData() {
+    console.log('Request received at /app endpoint');
+
     return {
       message: 'Hello from the app controller!',
       timestamp: new Date().toISOString(),

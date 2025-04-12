@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@lib/api-guard": ["libs/api-guard/src/index.ts"]
+      "@libs/trafix": ["libs/trafix/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

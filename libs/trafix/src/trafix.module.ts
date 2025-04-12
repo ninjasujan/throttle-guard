@@ -1,15 +1,20 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
+import { TrafixGuard } from './guards/trafix.guard';
 import { RedisModule, RedisModuleAsyncOptions } from '@nestjs-modules/ioredis';
-import { SlidingWindowLogGuard } from './middlewares';
+import { SlidingWindowService } from './service';
 import { ConfigModule } from '@nestjs/config';
 
-@Module({})
-export class ApiGuardModule {
+@Module({
+  imports: [ConfigModule],
+  providers: [SlidingWindowService, TrafixGuard],
+  exports: [SlidingWindowService],
+  controllers: [],
+})
+export class TrafixModule {
   static forRootAsync(options: RedisModuleAsyncOptions): DynamicModule {
     return {
-      module: ApiGuardModule,
+      module: TrafixModule,
       imports: [
-        ConfigModule,
         ...(options.imports || []),
         RedisModule.forRootAsync({
           useFactory: options.useFactory,
@@ -17,8 +22,6 @@ export class ApiGuardModule {
           imports: options.imports,
         }),
       ],
-      providers: [SlidingWindowLogGuard],
-      exports: [SlidingWindowLogGuard],
     };
   }
 }
