@@ -8,7 +8,7 @@ import { RedisService } from './memory-store';
 @Module({
   imports: [ConfigModule],
   providers: [SlidingWindowService, TrafixGuard, RedisService],
-  exports: [SlidingWindowService],
+  exports: [SlidingWindowService, TrafixGuard],
   controllers: [],
 })
 export class TrafixModule {
