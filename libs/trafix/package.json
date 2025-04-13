@@ -5,6 +5,10 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "@nestjs-modules/ioredis": "^2.0.2",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^4.0.2",
+    "ioredis": "^5.6.0",
+    "tslib": "^2.8.1"
   }
 }
