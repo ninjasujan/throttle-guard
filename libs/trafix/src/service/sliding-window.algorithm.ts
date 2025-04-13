@@ -2,6 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
+import { RedisService } from '../memory-store';
 
 @Injectable()
 export class SlidingWindowService {
@@ -9,7 +10,7 @@ export class SlidingWindowService {
   private readonly LIMIT: number;
 
   constructor(
-    @InjectRedis() private readonly redisService: Redis,
+    private readonly redisService: RedisService,
     private configService: ConfigService
   ) {
     this.WINDOW_SIZE = Number(this.configService.get('WINDOW_MS') ?? 60) * 1000; // Default to 60 seconds
@@ -46,14 +47,12 @@ export class SlidingWindowService {
     `;
 
     // Execute the Lua script
-    const requestCount: number = (await this.redisService.eval(
-      luaScript,
-      1,
-      key,
-      now,
-      this.WINDOW_SIZE,
-      this.LIMIT
-    )) as number;
+    const requestCount: number =
+      await this.redisService.executeLuaScript<number>(
+        luaScript,
+        [key],
+        [now, this.WINDOW_SIZE, this.LIMIT]
+      );
 
     console.log(
       `Request count for key ${key}: ${requestCount} at ${new Date(

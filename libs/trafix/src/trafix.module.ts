@@ -3,10 +3,11 @@ import { TrafixGuard } from './guards/trafix.guard';
 import { RedisModule, RedisModuleAsyncOptions } from '@nestjs-modules/ioredis';
 import { SlidingWindowService } from './service';
 import { ConfigModule } from '@nestjs/config';
+import { RedisService } from './memory-store';
 
 @Module({
   imports: [ConfigModule],
-  providers: [SlidingWindowService, TrafixGuard],
+  providers: [SlidingWindowService, TrafixGuard, RedisService],
   exports: [SlidingWindowService],
   controllers: [],
 })
