@@ -1,0 +1,1 @@
+export const RATE_LIMIT_CONFIG = 'RATE_LIMIT_CONFIG';

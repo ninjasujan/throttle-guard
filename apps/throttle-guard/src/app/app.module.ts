@@ -7,14 +7,22 @@ import { Module } from '@nestjs/common';
   imports: [
     ConfigModule.forRoot(),
     TrafixModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'single',
-        url: configService.getOrThrow<string>('REDIS_URL'),
-      }),
+      redis: {
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          type: 'single',
+          url: configService.getOrThrow<string>('REDIS_URL'),
+        }),
+      },
+      config: {
+        maxRequests: 10,
+        windowMs: 60,
+        message: 'Too many requests',
+        statusCode: 429,
+        headers: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+      },
     }),
-    TrafixModule,
   ],
   providers: [],
   controllers: [AppController],

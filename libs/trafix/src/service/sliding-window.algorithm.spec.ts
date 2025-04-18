@@ -41,19 +41,19 @@ describe('SlidingWindowService', () => {
 
   it('should allow requests within the limit', async () => {
     jest.spyOn(redisService, 'executeLuaScript').mockResolvedValue(3);
-    const result = await slidingWindowService.isAllowed('user1');
+    const result = await slidingWindowService.checkRateLimitOnRequest('user1');
     expect(result).toBe(true);
   });
 
   it('should block requests exceeding the limit', async () => {
     jest.spyOn(redisService, 'executeLuaScript').mockResolvedValue(5);
-    const result = await slidingWindowService.isAllowed('user1');
+    const result = await slidingWindowService.checkRateLimitOnRequest('user1');
     expect(result).toBe(false);
   });
 
   it('should use correct window size and limit from config', async () => {
     jest.spyOn(redisService, 'executeLuaScript').mockResolvedValue(0);
-    await slidingWindowService.isAllowed('user1');
+    await slidingWindowService.checkRateLimitOnRequest('user1');
     expect(configService.get).toHaveBeenCalledWith('WINDOW_MS');
     expect(configService.get).toHaveBeenCalledWith('MAX_REQUESTS');
     expect(redisService.executeLuaScript).toHaveBeenCalledWith(

@@ -12,6 +12,22 @@ export class TrafixGuard implements CanActivate {
 
     console.log('TrafixGuard is checking the request...');
 
-    return await this.slidingWindowService.isAllowed(ip);
+    const { isAllowed, remainingRequests } =
+      await this.slidingWindowService.checkRateLimitOnRequest(ip);
+
+    const response = context.switchToHttp().getResponse();
+    //response.header('X-RateLimit-Limit', ??);
+    response.header('X-RateLimit-Remaining', remainingRequests);
+
+    if (!isAllowed) {
+      response.status(429).json({
+        statusCode: 429,
+        message: 'Too Many Requests',
+        error: 'Rate limit exceeded',
+      });
+      return false;
+    }
+
+    return isAllowed;
   }
 }

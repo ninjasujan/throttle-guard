@@ -1,22 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import { RedisService } from '../memory-store';
+import { IGuardConfig } from '../types';
+import { RATE_LIMIT_CONFIG } from '../constant';
 
 @Injectable()
 export class SlidingWindowService {
-  private readonly WINDOW_SIZE: number; // in milliseconds
-  private readonly LIMIT: number;
-
   constructor(
     private readonly redisService: RedisService,
-    private configService: ConfigService
-  ) {
-    this.WINDOW_SIZE = Number(this.configService.get('WINDOW_MS') ?? 60) * 1000; // Default to 60 seconds
-    this.LIMIT = Number(this.configService.get('MAX_REQUESTS') ?? 5); // Default to 5 requests
-  }
+    @Inject(RATE_LIMIT_CONFIG) private readonly config: IGuardConfig
+  ) {}
 
-  async isAllowed(key: string): Promise<boolean> {
-    const now = Date.now(); // Current timestamp in milliseconds
+  async checkRateLimitOnRequest(key: string): Promise<{
+    isAllowed: boolean;
+    remainingRequests: number;
+  }> {
+    const now = Date.now(); // Current timestamp
 
     // Lua script for atomic execution
     const luaScript = `
@@ -49,15 +47,12 @@ export class SlidingWindowService {
       await this.redisService.executeLuaScript<number>(
         luaScript,
         [key],
-        [now, this.WINDOW_SIZE, this.LIMIT]
+        [now, this.config.windowMs * 1000, this.config.maxRequests]
       );
 
-    console.log(
-      `Request count for key ${key}: ${requestCount} at ${new Date(
-        now
-      ).toISOString()}`
-    );
-
-    return requestCount < this.LIMIT;
+    return {
+      isAllowed: requestCount < this.config.maxRequests,
+      remainingRequests: this.config.maxRequests - requestCount,
+    };
   }
 }
