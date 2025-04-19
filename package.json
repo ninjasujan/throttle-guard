@@ -1,9 +1,10 @@
 {
   "name": "@throttle-guard/source",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start:dev": "npx nx run throttle-guard:serve --configuration=development --inspect"
+    "start:dev": "npx nx run throttle-guard:serve --configuration=development --inspect",
+    "prepublishOnly": "npm run build"
   },
   "private": true,
   "dependencies": {

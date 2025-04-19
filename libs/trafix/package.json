@@ -1,5 +1,5 @@
 {
-  "name": "@nestjs/trafix",
+  "name": "@api-guard/trafix",
   "version": "1.0.0",
   "description": "A NestJS guard for API rate limiting using Redis and sliding window algorithm",
   "license": "MIT",
@@ -23,8 +23,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "jest",
-    "prepublishOnly": "npm run build && npm test"
+    "test": "jest"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
