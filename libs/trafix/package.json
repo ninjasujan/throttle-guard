@@ -1,14 +1,61 @@
 {
-  "name": "@libs/trafix",
-  "version": "0.0.1",
+  "name": "@nestjs/trafix",
+  "version": "1.0.0",
+  "description": "A NestJS guard for API rate limiting using Redis and sliding window algorithm",
+  "license": "MIT",
+  "author": "Sujan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ninjasujan/throttle-guard",
+    "directory": "libs/trafix"
+  },
+  "homepage": "https://github.com/ninjasujan/throttle-guard#readme",
+  "bugs": {
+    "url": "https://github.com/ninjasujan/throttle-guard/issues"
+  },
   "type": "commonjs",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build && npm test"
+  },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
-    "@nestjs/common": "^10.4.15",
-    "@nestjs/config": "^4.0.2",
-    "ioredis": "^5.6.0",
+    "ioredis": "^5.6.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^4.0.0",
     "tslib": "^2.8.1"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/config": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "nestjs",
+    "rate-limit",
+    "redis",
+    "sliding-window",
+    "throttle",
+    "trafix",
+    "nestjs-guard"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
