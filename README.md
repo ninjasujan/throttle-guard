@@ -2,7 +2,7 @@
 
 ## 🚀 Project Description
 
-API Rate Limiter is a middleware for NestJS that restricts the number of requests a client can make within a specific time window. It uses Redis as an in-memory store for efficient request tracking.
+API Rate Limiter is a guard for NestJS that restricts the number of requests a client can make within a specific time window. It uses Redis as an in-memory store for efficient request tracking.
 
 ## 🛠️ Tech Stack
 
@@ -49,22 +49,54 @@ npm run start:dev
 
 ## 📖 Project Explanation
 
-This middleware implements **rate limiting** using Redis for efficient request tracking. It currently supports the **Sliding Window algorithm** and will be extended to include more algorithms in the future.
+This guard implements **rate limiting** using Redis for efficient request tracking. It currently supports the **Sliding Window algorithm** and will be extended to include more algorithms in the future.
 
-### 📌 Integration with NestJS Middleware
+### 📌 Integration with NestJS Guard
 
-To use this in a NestJS project, import and apply it globally:
+To use this in a NestJS project, import and apply it to your controllers or globally:
 
 ```ts
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ApiGuardModule, SlidingWindowLogGuard } from '@lib/api-guard';
+import { Module } from '@nestjs/common';
+import { TrafixModule } from '@libs/trafix';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [ApiGuardModule.forRootAsync()],
+  imports: [
+    ConfigModule.forRoot(),
+    TrafixModule.forRootAsync({
+      redis: {
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          type: 'single',
+          url: configService.getOrThrow<string>('REDIS_URL'),
+        }),
+      },
+      config: {
+        maxRequests: 10,
+        windowMs: 60,
+        message: 'Too many requests',
+        statusCode: 429,
+        headers: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+      },
+    }),
+  ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SlidingWindowLogGuard).forRoutes('*');
+export class AppModule {}
+```
+
+Then, use the `TrafixGuard` in your controllers:
+
+```ts
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { TrafixGuard } from '@libs/trafix';
+
+@Controller('app')
+export class AppController {
+  @UseGuards(TrafixGuard)
+  @Get('')
+  getData() {
+    // Your controller logic here
   }
 }
 ```
