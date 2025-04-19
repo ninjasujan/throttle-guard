@@ -1,6 +1,6 @@
 {
   "name": "@api-guard/trafix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A NestJS guard for API rate limiting using Redis and sliding window algorithm",
   "license": "MIT",
   "author": "Sujan",
