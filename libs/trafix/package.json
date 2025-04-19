@@ -1,6 +1,6 @@
 {
   "name": "@api-guard/trafix",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A NestJS guard for API rate limiting using Redis and sliding window algorithm",
   "license": "MIT",
   "author": "Sujan",
@@ -9,7 +9,7 @@
     "url": "https://github.com/ninjasujan/throttle-guard",
     "directory": "libs/trafix"
   },
-  "homepage": "https://github.com/ninjasujan/throttle-guard#readme",
+  "homepage": "https://github.com/ninjasujan/throttle-guard/tree/main/libs/trafix#readme",
   "bugs": {
     "url": "https://github.com/ninjasujan/throttle-guard/issues"
   },
