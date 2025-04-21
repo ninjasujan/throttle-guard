@@ -8,9 +8,9 @@ services:
       - '6379:6379'
     volumes:
       - redis-data:/data
-    command: redis-server --save 20 1 --loglevel warning
+    command: redis-server --requirepass myredispassword --save 20 1 --loglevel warning
     healthcheck:
-      test: ['CMD-SHELL', 'redis-cli ping | grep PONG']
+      test: ['CMD-SHELL', 'redis-cli -a myredispassword ping | grep PONG']
       interval: 10s
       timeout: 5s
       retries: 5

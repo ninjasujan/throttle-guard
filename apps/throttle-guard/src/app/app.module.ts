@@ -13,14 +13,17 @@ import { Module } from '@nestjs/common';
         useFactory: (configService: ConfigService) => ({
           type: 'single',
           url: configService.getOrThrow<string>('REDIS_URL'),
+          options: {
+            password: configService.getOrThrow<string>('REDIS_PASSWORD'),
+          },
         }),
       },
       config: {
         maxRequests: 10,
-        windowMs: 60,
-        message: 'Too many requests',
+        windowMs: 20,
+        message: 'Too many requests, please try again later.',
         statusCode: 429,
-        headers: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+        ipHeader: 'x-real-ip',
       },
     }),
   ],

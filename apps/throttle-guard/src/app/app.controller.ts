@@ -14,8 +14,6 @@ export class AppController {
   @UseGuards(TrafixGuard)
   @Get('')
   getData() {
-    console.log('Request received at /app endpoint');
-
     return {
       message: 'Hello from the app controller!',
       timestamp: new Date().toISOString(),

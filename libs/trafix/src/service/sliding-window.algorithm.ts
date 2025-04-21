@@ -10,7 +10,7 @@ export class SlidingWindowService {
     @Inject(RATE_LIMIT_CONFIG) private readonly config: IGuardConfig
   ) {}
 
-  async checkRateLimitOnRequest(key: string): Promise<{
+  async validateAPIRequest(key: string): Promise<{
     isAllowed: boolean;
     remainingRequests: number;
   }> {

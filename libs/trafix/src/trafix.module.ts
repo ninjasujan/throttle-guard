@@ -1,7 +1,7 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { TrafixGuard } from './guards/trafix.guard';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { SlidingWindowService } from './service';
+import { ConfigExtractor, SlidingWindowService } from './service';
 import { ConfigModule } from '@nestjs/config';
 import { RedisService } from './memory-store';
 import { IRateLimiterOption } from './types';
@@ -30,8 +30,9 @@ export class TrafixModule {
         SlidingWindowService,
         TrafixGuard,
         RedisService,
+        ConfigExtractor,
       ],
-      exports: [SlidingWindowService, TrafixGuard],
+      exports: [SlidingWindowService, TrafixGuard, ConfigExtractor],
     };
   }
 }

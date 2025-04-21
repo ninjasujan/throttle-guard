@@ -23,7 +23,7 @@ export interface IGuardConfig {
    */
   maxRequests: number;
   /**
-   * Time window in milliseconds for rate limiting.
+   * Time window in seconds for rate limiting.
    */
   windowMs: number;
   /**
@@ -37,5 +37,12 @@ export interface IGuardConfig {
   /**
    * Headers to be included in the response for rate limit information.
    */
-  headers: Array<'X-RateLimit-Limit' | 'X-RateLimit-Remaining'>;
+  /**
+   * Header to extract IP address for rate limiting.
+   */
+  ipHeader: string;
+  /**
+   * Custom headers to be set in the response.
+   */
+  responseHeaders: string[];
 }

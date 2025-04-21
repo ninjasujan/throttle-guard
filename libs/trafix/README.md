@@ -2,12 +2,12 @@
 
 ## Project Description
 
-API Rate Limiter is a guard for NestJS that restricts the number of requests a client can make within a specific time window. It uses Redis as an in-memory store for efficient request tracking.
+API Rate Limiter is a powerful guard for NestJS that restricts the number of requests a client can make within a specific time window. It utilizes Redis as an in-memory store for efficient and scalable request tracking.
 
 ## Tech Stack
 
-- **NestJS**: Backend framework
-- **Redis**: In-memory data store for tracking request counts
+- **NestJS**: Backend framework for building efficient, reliable and scalable server-side applications
+- **Redis**: High-performance in-memory data store for tracking request counts
 
 ## Installation
 
@@ -36,20 +36,37 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         useFactory: (configService: ConfigService) => ({
           type: 'single',
           url: configService.get<string>('REDIS_URL'),
+          options: {
+            password: configService.get<string>('REDIS_PASSWORD'),
+          },
         }),
       },
       config: {
         maxRequests: 10,
         windowMs: 60000, // 60 seconds
-        message: 'Too many requests',
+        message: 'Too many requests, please try again later.',
         statusCode: 429,
-        headers: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+        ipHeader: 'x-real-ip', // Header to extract IP address
+        responseHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
       },
     }),
   ],
 })
 export class AppModule {}
 ```
+
+### Configuration Options
+
+- `redis`: Redis connection configuration
+  - `url`: Redis server URL
+  - `options.password`: Redis server password (if required)
+- `config`: Rate limiting configuration
+  - `maxRequests`: Maximum number of requests allowed in the time window
+  - `windowMs`: Time window in milliseconds
+  - `message`: Custom error message for rate limit exceeded (optional)
+  - `statusCode`: HTTP status code for rate limit exceeded (optional)
+  - `ipHeader`: Custom header to extract client IP address (optional)
+  - `responseHeaders`: Custom headers to include in the response (optional)
 
 ### Applying the Guard
 
@@ -71,13 +88,14 @@ export class AppController {
 
 ## Features
 
-- Implements rate limiting using Redis for efficient request tracking
-- Currently supports the Sliding Window algorithm
+- Implements rate limiting using Redis for efficient and scalable request tracking
+- Supports the Sliding Window algorithm for accurate rate limiting
+- Customizable configuration options for flexible integration
 - Extensible architecture for future algorithm implementations
 
 ## Contributing
 
-We welcome contributions! To contribute:
+We welcome contributions to improve API Rate Limiter! To contribute:
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/AmazingFeature`)
@@ -89,8 +107,8 @@ Please ensure your code follows NestJS best practices and includes relevant test
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/ninjasujan/throttle-guard/blob/main/libs/trafix/LICENCE) file for details.
 
 ---
 
-For more information, please refer to the [official documentation](https://github.com/your-repo-link).
+For more information and detailed documentation, please refer to our [official documentation](https://github.com/ninjasujan/throttle-guard/tree/main/libs/trafix).
